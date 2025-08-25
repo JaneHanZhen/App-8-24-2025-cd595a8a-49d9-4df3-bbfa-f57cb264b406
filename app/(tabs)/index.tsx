@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Animated, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { getTheme } from '../theme';
 
 export default function HelloWorldScreen() {
+  const theme = getTheme();
+  
   // Animation setup
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(50)).current;
@@ -27,8 +30,8 @@ export default function HelloWorldScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar style={theme.statusBarStyle} />
       
       <View style={styles.contentContainer}>
         <Animated.View 
@@ -36,13 +39,17 @@ export default function HelloWorldScreen() {
             styles.card, 
             { 
               opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }] 
+              transform: [{ translateY: slideAnim }],
+              backgroundColor: theme.cardBackground,
+              shadowColor: theme.shadow,
             }
           ]}
         >
-          <Text style={styles.hello}>Hello,</Text>
-          <Text style={styles.world}>World!</Text>
-          <Text style={styles.subtitle}>Welcome to my first React Native app</Text>
+          <Text style={[styles.hello, { color: theme.textPrimary }]}>Hello,</Text>
+          <Text style={[styles.world, { color: theme.primary }]}>World!</Text>
+          <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
+            Welcome to my first React Native app
+          </Text>
         </Animated.View>
       </View>
     </View>
@@ -52,7 +59,6 @@ export default function HelloWorldScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f9fc',
   },
   contentContainer: {
     flex: 1,
@@ -61,35 +67,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   card: {
-    backgroundColor: 'white',
     borderRadius: 16,
     padding: 30,
     minWidth: '85%',
     alignItems: 'center',
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 12,
     elevation: 5,
   },
   hello: {
     fontSize: 32,
     fontWeight: '300',
-    color: '#333',
     marginBottom: 4,
   },
   world: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#4a6ee0',
     marginBottom: 16,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
     textAlign: 'center',
     marginTop: 8,
   },

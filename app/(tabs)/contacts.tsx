@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { getTheme } from '../theme';
 
 // Fake friends data
 const fakeFriends = [
@@ -98,49 +99,8 @@ const fakeFriends = [
   },
 ];
 
-// Contact Item Component
-const ContactItem = ({ item, onToggleFavorite }) => {
-  const scaleAnim = React.useRef(new Animated.Value(0.95)).current;
-  
-  React.useEffect(() => {
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      friction: 4,
-      tension: 40,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
-  return (
-    <Animated.View style={[
-      styles.contactItem,
-      { transform: [{ scale: scaleAnim }] }
-    ]}>
-      <TouchableOpacity style={styles.contactCard}>
-        <View style={styles.avatarContainer}>
-          <Image source={{ uri: item.avatar }} style={styles.avatar} />
-        </View>
-        <View style={styles.contactInfo}>
-          <Text style={styles.contactName}>{item.name}</Text>
-          <Text style={styles.contactDetail}>{item.phone}</Text>
-          <Text style={styles.contactEmail}>{item.email}</Text>
-        </View>
-        <TouchableOpacity 
-          style={styles.favoriteButton}
-          onPress={() => onToggleFavorite(item.id)}
-        >
-          <Ionicons 
-            name={item.isFavorite ? "heart" : "heart-outline"} 
-            size={24} 
-            color={item.isFavorite ? "#ff4a6e" : "#ccc"} 
-          />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Animated.View>
-  );
-};
-
 export default function ContactsScreen() {
+  const theme = getTheme();
   const [friends, setFriends] = useState(fakeFriends);
   const { width } = useWindowDimensions();
   
@@ -161,22 +121,78 @@ export default function ContactsScreen() {
     ? friends.filter(friend => friend.isFavorite)
     : friends;
 
+  // Contact Item Component
+  const ContactItem = ({ item, onToggleFavorite }) => {
+    const scaleAnim = React.useRef(new Animated.Value(0.95)).current;
+    
+    React.useEffect(() => {
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 4,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
+    }, []);
+
+    return (
+      <Animated.View style={[
+        styles.contactItem,
+        { transform: [{ scale: scaleAnim }] }
+      ]}>
+        <TouchableOpacity style={[
+          styles.contactCard,
+          { backgroundColor: theme.cardBackground, shadowColor: theme.shadow }
+        ]}>
+          <View style={styles.avatarContainer}>
+            <Image source={{ uri: item.avatar }} style={[
+              styles.avatar,
+              { borderColor: theme.divider }
+            ]} />
+          </View>
+          <View style={styles.contactInfo}>
+            <Text style={[styles.contactName, { color: theme.textPrimary }]}>
+              {item.name}
+            </Text>
+            <Text style={[styles.contactDetail, { color: theme.textSecondary }]}>
+              {item.phone}
+            </Text>
+            <Text style={[styles.contactEmail, { color: theme.textTertiary }]}>
+              {item.email}
+            </Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.favoriteButton}
+            onPress={() => onToggleFavorite(item.id)}
+          >
+            <Ionicons 
+              name={item.isFavorite ? "heart" : "heart-outline"} 
+              size={24} 
+              color={item.isFavorite ? theme.favorite : theme.favoriteInactive} 
+            />
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <StatusBar style={theme.statusBarStyle} />
       
-      <View style={styles.header}>
-        <Text style={styles.title}>My Contacts</Text>
+      <View style={[styles.header, { borderBottomColor: theme.divider }]}>
+        <Text style={[styles.title, { color: theme.textPrimary }]}>
+          My Contacts
+        </Text>
         <TouchableOpacity 
-          style={styles.filterButton}
+          style={[styles.filterButton, { backgroundColor: theme.filterBackground }]}
           onPress={() => setShowFavoritesOnly(!showFavoritesOnly)}
         >
           <Ionicons 
             name={showFavoritesOnly ? "filter" : "filter-outline"} 
             size={24} 
-            color="#4a6ee0" 
+            color={theme.primary} 
           />
-          <Text style={styles.filterText}>
+          <Text style={[styles.filterText, { color: theme.primary }]}>
             {showFavoritesOnly ? "All" : "Favorites"}
           </Text>
         </TouchableOpacity>
@@ -201,7 +217,6 @@ export default function ContactsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f9fc',
     paddingTop: Platform.OS === 'android' ? RNStatusBar.currentHeight : 0,
   },
   header: {
@@ -211,24 +226,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#eaeaea',
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
   },
   filterButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#e6edff',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
   },
   filterText: {
     marginLeft: 6,
-    color: '#4a6ee0',
     fontWeight: '500',
   },
   list: {
@@ -240,15 +251,13 @@ const styles = StyleSheet.create({
   contactCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
   },
@@ -260,7 +269,6 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     borderWidth: 2,
-    borderColor: '#f0f0f0',
   },
   contactInfo: {
     flex: 1,
@@ -268,17 +276,14 @@ const styles = StyleSheet.create({
   contactName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
     marginBottom: 4,
   },
   contactDetail: {
     fontSize: 14,
-    color: '#666',
     marginBottom: 2,
   },
   contactEmail: {
     fontSize: 14,
-    color: '#888',
   },
   favoriteButton: {
     padding: 8,
