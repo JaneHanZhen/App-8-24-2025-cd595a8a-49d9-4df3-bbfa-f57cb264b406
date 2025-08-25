@@ -9,7 +9,8 @@ import {
   Animated,
   Platform,
   StatusBar as RNStatusBar,
-  useWindowDimensions
+  useWindowDimensions,
+  Alert
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
@@ -99,6 +100,16 @@ const fakeFriends = [
   },
 ];
 
+// New friend data
+const newFriend = {
+  id: '11',
+  name: 'Riley Morgan',
+  avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
+  phone: '(555) 123-7890',
+  email: 'riley.m@example.com',
+  isFavorite: false,
+};
+
 export default function ContactsScreen() {
   const theme = getTheme();
   const [friends, setFriends] = useState(fakeFriends);
@@ -111,6 +122,30 @@ export default function ContactsScreen() {
         ? {...friend, isFavorite: !friend.isFavorite} 
         : friend
     ));
+  };
+
+  // Function to add a new friend
+  const handleAddFriend = () => {
+    // Check if friend already exists in the list
+    if (friends.some(friend => friend.id === newFriend.id)) {
+      Alert.alert(
+        "Friend Already Added",
+        `${newFriend.name} is already in your contacts.`,
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    
+    // Add the new friend with animation
+    const updatedFriends = [...friends, newFriend];
+    setFriends(updatedFriends);
+    
+    // Show success message
+    Alert.alert(
+      "Friend Added",
+      `${newFriend.name} has been added to your contacts!`,
+      [{ text: "Great!" }]
+    );
   };
 
   // Filter options
@@ -209,6 +244,15 @@ export default function ContactsScreen() {
         )}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        ListFooterComponent={
+          <TouchableOpacity 
+            style={[styles.addFriendButton, { backgroundColor: theme.primary }]}
+            onPress={handleAddFriend}
+          >
+            <Ionicons name="person-add" size={24} color="white" />
+            <Text style={styles.addFriendText}>Add Riley Morgan</Text>
+          </TouchableOpacity>
+        }
       />
     </View>
   );
@@ -244,6 +288,7 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: 16,
+    paddingBottom: 80, // Add extra padding at the bottom
   },
   contactItem: {
     marginBottom: 12,
@@ -288,4 +333,25 @@ const styles = StyleSheet.create({
   favoriteButton: {
     padding: 8,
   },
+  addFriendButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 20,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  addFriendText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 8,
+  }
 });
