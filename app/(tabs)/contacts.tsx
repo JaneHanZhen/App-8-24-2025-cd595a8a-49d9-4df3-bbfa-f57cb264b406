@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -98,9 +98,18 @@ const fakeFriends = [
     email: 'alexander.c@example.com',
     isFavorite: true,
   },
+  // Added Riley Morgan to the initial list
+  {
+    id: '11',
+    name: 'Riley Morgan',
+    avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
+    phone: '(555) 123-7890',
+    email: 'riley.m@example.com',
+    isFavorite: false,
+  }
 ];
 
-// New friend data
+// New friend data - keeping this for the add button functionality
 const newFriend = {
   id: '11',
   name: 'Riley Morgan',
