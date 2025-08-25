@@ -30,9 +30,39 @@ export const darkTheme = {
   statusBarStyle: 'light',
 };
 
+export const lightTheme = {
+  // Base colors
+  background: '#f5f5f5',
+  surface: '#ffffff',
+  primary: '#4a6ee0',
+  secondary: '#0099cc',
+  accent: '#4a6ee0',
+  error: '#b00020',
+  
+  // Text colors
+  textPrimary: '#212121',
+  textSecondary: '#757575',
+  textTertiary: '#9e9e9e',
+  textDisabled: '#bdbdbd',
+  
+  // UI element colors
+  cardBackground: '#ffffff',
+  divider: '#e0e0e0',
+  tabBarBackground: '#ffffff',
+  tabBarActive: '#4a6ee0',
+  tabBarInactive: '#9e9e9e',
+  inputBackground: '#f0f0f0',
+  shadow: '#cccccc',
+  favorite: '#ff4a6e',
+  favoriteInactive: '#dddddd',
+  filterBackground: '#e6ecff',
+  
+  // Status bar
+  statusBarStyle: 'dark',
+};
+
 // Function to get the current theme
 export const getTheme = () => {
-  // For now, we're only returning dark theme
-  // This could be expanded to support light/dark toggle
-  return darkTheme;
+  // Now returning light theme
+  return lightTheme;
 };
